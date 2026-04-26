@@ -9,9 +9,9 @@ def plot_singular_value_spectrum(F_by_split: Dict[str, np.ndarray], kappa: int=4
     for label, F in F_by_split.items():
         sv = np.linalg.svd(F, compute_uv=False)
         ax.semilogy(np.arange(1, len(sv) + 1), sv + 1e-16, 'o-', label=label, markersize=4)
-    ax.axvline(kappa + 0.5, color='gray', linestyle='--', alpha=0.6, label=f'rank κ={kappa}')
+    ax.axvline(kappa + 0.5, color='gray', linestyle='--', alpha=0.6, label=f'rank kappa={kappa}')
     ax.set_xlabel('singular value index')
-    ax.set_ylabel('σ (log)')
+    ax.set_ylabel('sigma (log)')
     ax.set_title(title)
     ax.legend(fontsize=8)
     ax.grid(alpha=0.3)
@@ -53,7 +53,7 @@ def plot_fourier_spectrum(Phat: np.ndarray, ax: Optional[plt.Axes]=None, title: 
     flat = np.abs(Phat).flatten()
     ax.bar(np.arange(len(flat)), flat, color='tab:purple', width=1.0)
     ax.set_xlabel('Fourier-coordinate index')
-    ax.set_ylabel('|P̂|')
+    ax.set_ylabel('|P?|')
     ax.set_title(title)
     ax.set_yscale('log')
     return ax

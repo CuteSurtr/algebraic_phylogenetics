@@ -4,7 +4,7 @@ from typing import Callable, Dict, List, Optional, Sequence
 import numpy as np
 from .tree import Node, Tree
 TransitionFn = Callable[[float], np.ndarray]
-'A function t ↦ M(t) returning a κ×κ row-stochastic matrix.'
+'A function t ? M(t) returning a kappaxkappa row-stochastic matrix.'
 
 @dataclass
 class TreeModel:

@@ -2,6 +2,10 @@
 
 A from scratch library for algebraic statistics on phylogenetic trees. The library implements the full stack of algebraic phylogenetics, from continuous time Markov substitution models on tree topologies through exact joint distribution tensors and Felsenstein pruning, into topology inference via the SVDQuartets algorithm of Chifman and Kubatko, symbolic phylogenetic invariants in the sense of Allman and Rhodes and Sturmfels and Sullivant, quartet puzzling assembly of full taxon trees, bootstrap confidence, maximum likelihood branch length estimation, and external validation against DendroPy and Biopython. Every headline algorithm is verified on simulated data and on the cytochrome oxidase subunit I gene of five primate species.
 
+**Tests:** 24 passing, 2 skipped (external bridges) in ~11 s. **License:** MIT.
+
+![algphylo demo](results/algphylo_demo.png)
+
 ## Foundations
 
 A phylogenetic tree model is a Markov process on DNA states evolving down the edges of a rooted binary tree. The parameters are a root distribution on the four nucleotides together with a four by four row stochastic transition matrix on each edge. Evaluating the joint distribution of nucleotides at the leaves produces a tensor of shape four by four by four by four for a four taxon tree, and in general of shape four to the n for n taxa. This joint tensor is the central object of algebraic phylogenetics. Its image under the parameterization defines the phylogenetic variety, and the polynomials that vanish on it form the phylogenetic ideal. Finding generators of this ideal is the classical problem that Allman and Rhodes solved for the general Markov model in 2008 and that Sturmfels and Sullivant solved for group based models in 2005 by recognizing the variety as toric in Fourier coordinates.

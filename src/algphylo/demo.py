@@ -37,17 +37,17 @@ def main() -> None:
         r_exact = rank_invariant_residual(P, A, B)
         r_emp = rank_invariant_residual(P_emp, A, B)
         print(f'  {label:<15}{r_exact:>18.2e}{r_emp:>24.2e}')
-    print('  ↑ exact tensor: only the true edge split has residual ≈ 0')
-    print('  ↑ 20k-site empirical: true edge still has smallest residual')
+    print('  ^ exact tensor: only the true edge split has residual ~ 0')
+    print('  ^ 20k-site empirical: true edge still has smallest residual')
     section('3. SVDQuartets on simulated data (topology recovery)')
     qr = quartet_scores(data, tree.taxa)
     print(qr.summary())
     best = qr.best
-    print(f"  → winner: {'+'.join(best[0])} | {'+'.join(best[1])}")
+    print(f"  -> winner: {'+'.join(best[0])} | {'+'.join(best[1])}")
     assert set(best) == {('a', 'b'), ('c', 'd')}, 'topology recovery failed'
     section('4. Global Fourier parity support check (group-based sanity)')
     off = global_parity_off_support_mass(P)
-    print(f'  exact JC tensor: off-parity-support mass = {off:.2e}  (should be ≈0)')
+    print(f'  exact JC tensor: off-parity-support mass = {off:.2e}  (should be ~0)')
     off_emp = global_parity_off_support_mass(P_emp)
     print(f'  20k-site empirical:                    = {off_emp:.2e}')
     section('5. Real data: 5-primate mitochondrial quartet analysis')
@@ -55,7 +55,7 @@ def main() -> None:
     if not primate_fasta.exists():
         print('  (primate COI data not available, skipping)')
     else:
-        print('  using cytochrome oxidase I (COI) — a protein-coding, well-conserved gene')
+        print('  using cytochrome oxidase I (COI) -- a protein-coding, well-conserved gene')
         records = read_fasta(primate_fasta)
         short_name = {'NC_012920.1:5904-7445': 'Human', 'NC_001643.1:5904-7445': 'Chimp', 'NC_001644.1:5904-7445': 'Bonobo', 'NC_001645.1:5904-7445': 'Gorilla', 'NC_002083.1:5904-7445': 'Orangutan'}
         for r in records:
@@ -72,17 +72,17 @@ def main() -> None:
         for qr in results:
             best = qr.best
             label = f"{'+'.join(best[0])} | {'+'.join(best[1])}"
-            print(f'    taxa={qr.taxa}  →  best split: {label}')
+            print(f'    taxa={qr.taxa}  ->  best split: {label}')
         for qr in results:
             if set(qr.taxa) == {'Human', 'Chimp', 'Bonobo', 'Gorilla'}:
                 best = qr.best
                 biology_expected = {('Bonobo', 'Chimp'), ('Gorilla', 'Human')}
                 got = {tuple(sorted(best[0])), tuple(sorted(best[1]))}
                 if got == biology_expected:
-                    print('  ✓ recovered biologically correct chimp-bonobo sister grouping')
+                    print('  [ok] recovered biologically correct chimp-bonobo sister grouping')
                 else:
-                    print(f'  ⚠ expected {biology_expected}, got {got}')
-    section('6. Quartet puzzling → n-taxon tree on primate data')
+                    print(f'  [warn] expected {biology_expected}, got {got}')
+    section('6. Quartet puzzling -> n-taxon tree on primate data')
     try:
         from . import build_tree_via_svdquartets
         from .external.dendropy_bridge import rf_distance, same_topology
@@ -96,7 +96,7 @@ def main() -> None:
         print(f'\n  reference topology: {reference}')
         print(f'  Robinson-Foulds distance to reference: {d}')
         if d == 0:
-            print('  ✓ exact topology match')
+            print('  [ok] exact topology match')
         else:
             print(f'  (partial match; differences are in internal-edge rootings)')
     except ImportError as e:
@@ -110,13 +110,13 @@ def main() -> None:
     for split, pct in sorted(support.items(), key=lambda kv: -kv[1]):
         a_, b_ = split
         print(f"    {'+'.join(a_):>6} | {'+'.join(b_):<6}   {pct:.1%}")
-    section('8. Symbolic invariants — Allman-Rhodes 3×3 minors + JC binomials')
+    section('8. Symbolic invariants -- Allman-Rhodes 3x3 minors + JC binomials')
     from .invariants_symbolic import evaluate_fourier_binomial, evaluate_on_tensor, flatten_symbolic, jc_fourier_support_4taxon, symbolic_tensor, three_by_three_minors
     Psym, syms = symbolic_tensor(n_taxa=4, kappa=4)
     F_sym = flatten_symbolic(Psym, [0, 1], [2, 3])
     minors = three_by_three_minors(F_sym, limit=3)
     print(f'  Symbolic flattening F_{{a,b|c,d}} shape: {F_sym.shape}')
-    print(f'  Computed {len(minors)} sample 3×3 minors; first has {minors[0].count_ops()} operations.')
+    print(f'  Computed {len(minors)} sample 3x3 minors; first has {minors[0].count_ops()} operations.')
     P_exact = TreeModel(tree=parse_newick('((a:0.2,b:0.2):0.3,(c:0.2,d:0.2):0.1);'), root_distribution=np.full(4, 0.25), transition_fn=lambda t: jc_transition(t), kappa=4).joint_tensor(leaf_order=['a', 'b', 'c', 'd'])
     for i, m in enumerate(minors):
         v = evaluate_on_tensor(m, syms, P_exact)
@@ -126,7 +126,7 @@ def main() -> None:
     from .fourier import hadamard_transform
     Phat = hadamard_transform(P_exact)
     max_v = max((abs(evaluate_fourier_binomial(Phat, a, b)) for a, b in binomials))
-    print(f'  Max absolute value on exact JC tensor: {max_v:.2e}  (all ≈ 0 ⇒ invariants validated)')
+    print(f'  Max absolute value on exact JC tensor: {max_v:.2e}  (all ~ 0 => invariants validated)')
     section('9. Branch-length MLE on simulated data')
     from .mle import fit_branch_lengths
     true_tree = parse_newick('((a:0.25,b:0.25):0.3,(c:0.25,d:0.25):0.15);')
@@ -140,7 +140,7 @@ def main() -> None:
     for lab, tv, fv in zip(labels, true_values, fit_lengths):
         print(f'    {lab:<6}  true={tv:.3f}   fit={fv:.3f}')
     if HAVE_MPL:
-        section('10. Figures → results/')
+        section('10. Figures -> results/')
         fig, axs = plt.subplots(2, 2, figsize=(12, 8))
         F_by = {}
         for A, B, label in [([0, 1], [2, 3], '{a,b}|{c,d} (true)'), ([0, 2], [1, 3], '{a,c}|{b,d}'), ([0, 3], [1, 2], '{a,d}|{b,c}')]:
@@ -149,7 +149,7 @@ def main() -> None:
         viz.plot_quartet_scores_bar(qr.scores, ax=axs[0][1], title='SVDQuartets on simulated JC data')
         viz.plot_flattening_heatmap(F_by['{a,b}|{c,d} (true)'], ax=axs[1][0], title='True-edge flattening |F_{a,b|c,d}|')
         Phat = hadamard_transform(P_emp)
-        viz.plot_fourier_spectrum(Phat, ax=axs[1][1], title='Hadamard transform of empirical P̂')
+        viz.plot_fourier_spectrum(Phat, ax=axs[1][1], title='Hadamard transform of empirical P?')
         fig.tight_layout()
         fig.savefig(RESULTS / 'algphylo_demo.png', dpi=140, bbox_inches='tight')
         print(f"  wrote {RESULTS / 'algphylo_demo.png'}")
